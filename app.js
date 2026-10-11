@@ -11,11 +11,11 @@ const INITIAL_TARGETS = [
 ];
 
 const TOTAL_GOAL = INITIAL_TARGETS.reduce((a, b) => a + b, 0);
-const STORAGE_KEY = 'pullup_challenge_v3';
-const USERS_STORAGE_KEY = 'pullup_users_db_v1';
-const ACTIVE_USER_KEY = 'pullup_active_user_id';
-const DEFAULT_FIREBASE_URL = 'https://pullups-10k-default-rtdb.firebaseio.com';
-const CLOUD_URL_KEY = 'pullup_cloud_url';
+const STORAGE_KEY = 'pullup_challenge_5k_v1';
+const USERS_STORAGE_KEY = 'pullup_users_5k_db_v1';
+const ACTIVE_USER_KEY = 'pullup_active_user_5k_id';
+const DEFAULT_FIREBASE_URL = 'https://pullups-5k-default-rtdb.firebaseio.com';
+const CLOUD_URL_KEY = 'pullup_cloud_5k_url';
 
 // 17 Ranks / Statuses System (1..17 from Beginner to Legend 5,000)
 const USER_RANKS = [
@@ -252,6 +252,14 @@ async function checkCloudUpdatesForActiveUser(force = false) {
   try {
     const cloudUser = await fetchCloudUser(activeUser.id);
     if (!cloudUser || !cloudUser.challengeState || !Array.isArray(cloudUser.challengeState.days)) return;
+
+    // Verify cloud data adheres to the 5k plan targets
+    const matchesPlan = cloudUser.challengeState.days.every((d, i) => d.originalTarget === INITIAL_TARGETS[i]);
+    if (!matchesPlan) {
+      console.warn('Cloud challenge state target mismatch, pushing local 5k state to cloud');
+      syncToCloudAsync();
+      return;
+    }
 
     const currentStr = JSON.stringify(state.days);
     const cloudStr = JSON.stringify(cloudUser.challengeState.days);
