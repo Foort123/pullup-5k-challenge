@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Челлендж 5 000 подтягиваний | 30 дней силы</title>
+  <meta name="description" content="Интерактивный трекер прохождения 30-дневного челленджа на 5 000 подтягиваний с умным переносом недобора и сохранением прогресса.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="brand-icon-tile" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16M7 6v5a5 5 0 0 0 10 0V6M12 16v5m-4 0h8"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1 class="app-title">Челлендж 5 000 подтягиваний</h1>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div id="auth-header-container" class="auth-header-container">
+          <button id="btn-auth-open" class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Войти
+          </button>
+        </div>
+
+        <button id="btn-reset" class="btn btn-danger-outline" title="Сбросить челлендж">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <polyline points="23 20 23 14 17 14"></polyline>
+            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+          </svg>
+          Сброс
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Hero -->
+    <section class="dashboard-hero">
+      <!-- Radial Progress Ring Card -->
+      <div class="hero-card hero-progress-card">
+        <div class="radial-container">
+          <svg class="radial-svg" viewBox="0 0 200 200" width="180" height="180">
+            <defs>
+              <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F5EBDD" />
+                <stop offset="100%" stop-color="#D8C9B4" />
+              </linearGradient>
+            </defs>
+            <circle class="radial-bg" cx="100" cy="100" r="82" />
+            <circle class="radial-meter" id="radial-meter" cx="100" cy="100" r="82" />
+          </svg>
+          <div class="radial-content">
+            <span class="radial-percentage" id="stat-percent">0.0%</span>
+            <span class="radial-label">ВЫПОЛНЕНО</span>
+          </div>
+        </div>
+
+        <div class="hero-main-stats">
+          <div class="stat-highlight">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <div class="stat-label">Зачтённый объём</div>
+              <div id="hero-rank-container"></div>
+            </div>
+            <div class="stat-value"><span id="stat-completed" class="number-font">0</span> <span class="stat-unit">/ <span id="stat-total-target">5 000</span></span></div>
+            <div class="progress-bar-linear">
+              <div class="progress-bar-fill" id="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <div class="mini-stats-grid">
+            <div class="mini-stat-item">
+              <span class="mini-stat-label">Осталось повторов</span>
+              <span class="mini-stat-value text-accent-ivory" id="stat-remaining">5 000</span>
+            </div>
+            <div class="mini-stat-item">
+              <span class="mini-stat-label">Завершено дней</span>
+              <span class="mini-stat-value" id="stat-days-done">0 / 30</span>
+            </div>
+            <div class="mini-stat-item">
+              <span class="mini-stat-label">Цель на сегодня</span>
+              <span class="mini-stat-value text-accent-ivory" id="stat-today-target">150 повторений</span>
+            </div>
+            <div class="mini-stat-item">
+              <span class="mini-stat-label">Сумма всех целей</span>
+              <span class="mini-stat-value" id="stat-total-sum">5 000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Crypto-terminal Style Analytics & Chart Card -->
+      <div class="hero-card hero-chart-card">
+        <div class="crypto-card-header">
+          <div class="crypto-header-left">
+            <div class="card-title-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                <polyline points="16 7 22 7 22 13"></polyline>
+              </svg>
+            </div>
+            <div>
+              <div class="crypto-title-row">
+                <h2 class="card-title">Динамика нагрузки</h2>
+                <span class="crypto-ticker-badge" id="chart-live-badge">30 ДНЕЙ</span>
+              </div>
+              <p class="card-subtitle">Интерактивный график объёма и прогресса челленджа</p>
+            </div>
+          </div>
+
+          <!-- Timeframe / Mode Switcher -->
+          <div class="crypto-tabs-group" role="tablist" aria-label="Режим отображения графика">
+            <button type="button" class="crypto-tab-btn active" id="btn-chart-mode-daily" data-mode="daily">
+              По дням
+            </button>
+            <button type="button" class="crypto-tab-btn" id="btn-chart-mode-cumulative" data-mode="cumulative">
+              Накопительно
+            </button>
+          </div>
+        </div>
+
+        <!-- Crypto Mini HUD Ticker (Hoverable stats banner) -->
+        <div class="crypto-hud-bar" id="crypto-hud-bar">
+          <div class="crypto-hud-metric">
+            <span class="crypto-hud-label" id="hud-label-focus">День 1:</span>
+            <span class="crypto-hud-value number-font" id="hud-value-focus">150 повторений</span>
+          </div>
+          <div class="crypto-hud-metric">
+            <span class="crypto-hud-label">Статус:</span>
+            <span class="crypto-hud-tag" id="hud-status-tag">В плане</span>
+          </div>
+          <div class="crypto-hud-metric">
+            <span class="crypto-hud-label">Отклонение:</span>
+            <span class="crypto-hud-diff" id="hud-diff-tag">0 повторений</span>
+          </div>
+        </div>
+
+        <!-- Interactive SVG Chart Viewport -->
+        <div class="crypto-chart-viewport" id="crypto-chart-viewport">
+          <svg id="crypto-chart-svg" class="crypto-chart-svg" viewBox="0 0 540 180" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="cryptoAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#F0E4D0" stop-opacity="0.32" />
+                <stop offset="65%" stop-color="#F0E4D0" stop-opacity="0.06" />
+                <stop offset="100%" stop-color="#F0E4D0" stop-opacity="0.00" />
+              </linearGradient>
+              <linearGradient id="cryptoLineGradient" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#D8C9B4" />
+                <stop offset="50%" stop-color="#F0E4D0" />
+                <stop offset="100%" stop-color="#FFFFFF" />
+              </linearGradient>
+              <filter id="cryptoGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="2.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Background Grid & Labels -->
+            <g id="chart-grid-group" class="chart-grid-group"></g>
+
+            <!-- Baseline Plan Path (Dashed) -->
+            <path id="chart-path-baseline" class="chart-path-baseline" d="" />
+
+            <!-- Dynamic Gradient Area Fill -->
+            <path id="chart-path-area" class="chart-path-area" d="" fill="url(#cryptoAreaGradient)" />
+
+            <!-- Dynamic Glowing Line -->
+            <path id="chart-path-line" class="chart-path-line" d="" />
+
+            <!-- Data Dots for Days -->
+            <g id="chart-dots-group" class="chart-dots-group"></g>
+
+            <!-- Interactive Crosshair -->
+            <g id="chart-crosshair-group" class="chart-crosshair-group" style="display: none;">
+              <line id="chart-crosshair-line" class="chart-crosshair-line" x1="0" y1="12" x2="0" y2="155" />
+              <circle id="chart-crosshair-pulse" class="chart-crosshair-pulse" cx="0" cy="0" r="9" />
+              <circle id="chart-crosshair-dot" class="chart-crosshair-dot" cx="0" cy="0" r="4" />
+            </g>
+          </svg>
+
+          <!-- Floating Crypto HUD Tooltip -->
+          <div class="crypto-tooltip" id="crypto-tooltip" style="display: none;">
+            <div class="tooltip-header" id="tt-day">День 1</div>
+            <div class="tooltip-row">
+              <span class="tt-label">Цель:</span>
+              <span class="tt-value" id="tt-target">150 повторений</span>
+            </div>
+            <div class="tooltip-row">
+              <span class="tt-label">Статус:</span>
+              <span class="tt-value" id="tt-status">В плане</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crypto Metrics Bar -->
+        <div class="crypto-metrics-bar">
+          <div class="crypto-metric-chip">
+            <span class="chip-label">Пиковый день</span>
+            <span class="chip-val text-accent-ivory" id="chart-metric-peak">220 повторений</span>
+          </div>
+          <div class="crypto-metric-chip">
+            <span class="chip-label">Минимум</span>
+            <span class="chip-val" id="chart-metric-min">100 повторений</span>
+          </div>
+          <div class="crypto-metric-chip">
+            <span class="chip-label">Средний темп</span>
+            <span class="chip-val" id="chart-metric-avg">166.7 повторения</span>
+          </div>
+          <div class="crypto-metric-chip">
+            <span class="chip-label">Выполнено</span>
+            <span class="chip-val text-accent-ivory" id="chart-metric-done">0 из 30 дней</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Days Section -->
+    <section class="days-section">
+      <div class="section-toolbar">
+        <div class="section-heading-group">
+          <h2 class="section-title">Календарь челленджа (30 дней)</h2>
+          <span class="badge-counter" id="active-day-badge">Текущий день: 1</span>
+        </div>
+
+        <div class="toolbar-controls">
+          <!-- Filters -->
+          <div class="filter-pills" role="radiogroup" aria-label="Фильтр дней">
+            <button class="filter-pill active" data-filter="all">Все (30)</button>
+            <button class="filter-pill" data-filter="pending">Ожидают (<span id="filter-count-pending">30</span>)</button>
+            <button class="filter-pill" data-filter="completed">Завершённые (<span id="filter-count-completed">0</span>)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Days Grid -->
+      <div class="days-grid" id="days-grid">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Information & Rules Footer -->
+    <footer class="app-footer-info">
+      <div class="footer-card">
+        <h3 class="footer-card-title">Правила и механика челленджа</h3>
+        <ul class="rules-list">
+          <li><strong>30 дней и 5 000 повторов:</strong> Базовый план составлен с прогрессией и суммируется ровно в 5 000.</li>
+          <li><strong>Учёт выполнения:</strong> Отметка дня засчитывает его текущую цель в общий зачёт. Снятие отметки возвращает повторы в остаток.</li>
+          <li><strong>Перенос недобора:</strong> Если день не удалось закрыть целиком, укажите фактически выполненное число повторений. День закрывается, а недостающие повторы равномерно переносятся на оставшиеся дни (+1 к ранним дням при нечётном остатке).</li>
+          <li><strong>Сохранение:</strong> Состояние сохраняется мгновенно в браузере (LocalStorage). Также доступен экспорт в файл совместимый с <code>progress.json</code>.</li>
+        </ul>
+        <div class="storage-info">
+          <span>Локальное хранилище: <strong id="storage-status">Активно</strong></span>
+          <div class="storage-actions">
+            <button id="btn-export-json" class="btn-text">Экспорт JSON</button>
+            <label class="btn-text" for="file-import-json" style="cursor: pointer;">
+              Импорт JSON
+              <input type="file" id="file-import-json" accept=".json" style="display: none;">
+            </label>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Day Rollover Modal Window -->
+  <div class="modal-backdrop" id="modal-day-rollover" style="display: none;">
+    <div class="modal-dialog modal-dialog-rollover">
+      <div class="modal-dialog-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title" id="modal-rollover-title">Перенос подтягиваний</h3>
+          <p class="modal-subtitle" id="modal-rollover-subtitle">Текущая цель дня: 300 повторений</p>
+        </div>
+        <button type="button" class="btn-icon modal-close-btn" id="btn-close-rollover-modal" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <form id="modal-rollover-form" class="rollover-form">
+        <div class="form-group">
+          <label for="modal-input-actual">Сделал фактически</label>
+          <div class="input-stepper-container">
+            <input type="number" id="modal-input-actual" placeholder="Например, 250" min="0" step="1">
+            <span class="input-suffix">повторений</span>
+            <div class="stepper-buttons">
+              <button type="button" class="stepper-btn" id="btn-modal-step-minus" aria-label="Уменьшить на 1" title="Уменьшить">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+              <button type="button" class="stepper-btn" id="btn-modal-step-plus" aria-label="Увеличить на 1" title="Увеличить">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rollover-summary-box" id="modal-rollover-summary" style="display: none;">
+        </div>
+
+        <div id="modal-rollover-error" class="error-msg" style="display: none;"></div>
+
+        <div class="modal-actions" style="margin-top: 24px;">
+          <button type="button" id="btn-cancel-rollover-modal" class="btn btn-secondary">Отмена</button>
+          <button type="submit" id="btn-submit-modal-rollover" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Перенести и закрыть день
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation / Options Modal -->
+  <div class="modal-backdrop" id="modal-reset" style="display: none;">
+    <div class="modal-dialog modal-dialog-rollover">
+      <div class="modal-dialog-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Параметры сброса</h3>
+          <p class="modal-subtitle">Выберите, что требуется сбросить: конкретный день или весь челлендж</p>
+        </div>
+        <button type="button" class="btn-icon modal-close-btn" id="btn-close-reset-modal" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mode Switch Tabs -->
+      <div class="reset-mode-selector">
+        <button type="button" class="reset-tab-btn active" id="tab-reset-specific">
+          Сбросить конкретный день
+        </button>
+        <button type="button" class="reset-tab-btn" id="tab-reset-all">
+          Сбросить весь челлендж
+        </button>
+      </div>
+
+      <!-- Panel 1: Specific Day Reset -->
+      <div class="reset-panel" id="panel-reset-specific">
+        <div class="form-group custom-select-group">
+          <label class="form-label-styled">Выберите день для сброса</label>
+          
+          <!-- Custom Day Dropdown Selector -->
+          <div class="custom-dropdown" id="custom-day-dropdown">
+            <button type="button" class="custom-dropdown-trigger" id="custom-dropdown-trigger" aria-haspopup="listbox" aria-expanded="false">
+              <div class="trigger-left">
+                <span class="trigger-badge" id="dropdown-trigger-day">День 1</span>
+                <span class="trigger-target" id="dropdown-trigger-target">300 повторений</span>
+              </div>
+              <div class="trigger-right">
+                <span class="trigger-status-pill status-pending" id="dropdown-trigger-status">В плане</span>
+                <svg class="trigger-chevron" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </div>
+            </button>
+
+            <!-- Dropdown Options List -->
+            <div class="custom-dropdown-menu" id="custom-dropdown-menu" role="listbox" style="display: none;">
+              <!-- Dynamically populated 30 days list -->
+            </div>
+          </div>
+
+          <!-- Hidden Native Select for seamless fallback -->
+          <select id="select-reset-day" style="display: none;" aria-hidden="true"></select>
+        </div>
+
+        <!-- Quick selection chips for days with progress or changes -->
+        <div class="modified-days-quickbar" id="modified-days-quickbar" style="display: none;">
+          <span class="quickbar-label">Дни с прогрессом:</span>
+          <div class="quickbar-chips" id="modified-days-chips"></div>
+        </div>
+
+        <div class="modal-actions" style="margin-top: 24px;">
+          <button type="button" id="btn-cancel-reset-specific" class="btn btn-secondary">Отмена</button>
+          <button type="button" id="btn-confirm-reset-day" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            Сбросить выбранный день
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 2: Reset All -->
+      <div class="reset-panel" id="panel-reset-all" style="display: none;">
+        <div class="reset-all-warning-box">
+          <div class="warning-title">Сброс всех 30 дней</div>
+          <p class="warning-text">
+            Все отметки выполнения будут сняты, цели каждого дня вернутся к первоначальному плану. 
+            Общая сумма останется равной 5 000 повторений. Это действие необратимо.
+          </p>
+        </div>
+
+        <div class="modal-actions" style="margin-top: 20px;">
+          <button type="button" id="btn-cancel-reset-all" class="btn btn-secondary">Отмена</button>
+          <button type="button" id="btn-confirm-reset-all" class="btn btn-danger">
+            Да, сбросить всё
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Authentication Modal Window (Login & Registration) -->
+  <div class="modal-backdrop" id="modal-auth" style="display: none;">
+    <div class="modal-dialog modal-dialog-auth">
+      <div class="modal-dialog-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title" id="auth-modal-title">Вход в аккаунт</h3>
+          <p class="modal-subtitle" id="auth-modal-subtitle">Сохраняйте личный прогресс и переключайтесь между профилями</p>
+        </div>
+        <button type="button" class="btn-icon modal-close-btn" id="btn-close-auth-modal" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Mode Switch Tabs -->
+      <div class="auth-tabs-group" role="tablist">
+        <button type="button" class="auth-tab-btn active" id="tab-auth-login">
+          Вход
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-auth-register">
+          Регистрация
+        </button>
+      </div>
+
+      <!-- Form 1: Login -->
+      <form id="form-auth-login" class="auth-form">
+        <div class="form-group">
+          <label for="input-login-username">Имя пользователя</label>
+          <div class="input-glass-container">
+            <input type="text" id="input-login-username" placeholder="Например, Алексей" required autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-login-password">Пароль</label>
+          <div class="input-glass-container input-password-container">
+            <input type="password" id="input-login-password" placeholder="Введите пароль" required autocomplete="current-password">
+            <button type="button" class="btn-toggle-password" data-target="input-login-password" aria-label="Показать пароль">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="auth-login-error" class="error-msg" style="display: none;"></div>
+
+        <div class="modal-actions" style="margin-top: 20px;">
+          <button type="button" id="btn-cancel-auth-login" class="btn btn-secondary">Отмена</button>
+          <button type="submit" id="btn-submit-auth-login" class="btn btn-primary">
+            Войти
+          </button>
+        </div>
+
+        <div class="auth-switch-prompt">
+          <span>Нет аккаунта?</span>
+          <button type="button" class="btn-text-link" id="link-switch-to-register">Зарегистрироваться</button>
+        </div>
+      </form>
+
+      <!-- Form 2: Register -->
+      <form id="form-auth-register" class="auth-form" style="display: none;">
+        <div class="form-group">
+          <label for="input-register-username">Имя пользователя</label>
+          <div class="input-glass-container">
+            <input type="text" id="input-register-username" placeholder="Например, Алексей" required autocomplete="username" minlength="2">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-register-password">Пароль (от 4 символов)</label>
+          <div class="input-glass-container input-password-container">
+            <input type="password" id="input-register-password" placeholder="Придумайте пароль" required autocomplete="new-password" minlength="4">
+            <button type="button" class="btn-toggle-password" data-target="input-register-password" aria-label="Показать пароль">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="input-register-confirm">Повторите пароль</label>
+          <div class="input-glass-container input-password-container">
+            <input type="password" id="input-register-confirm" placeholder="Повторите пароль" required autocomplete="new-password" minlength="4">
+            <button type="button" class="btn-toggle-password" data-target="input-register-confirm" aria-label="Показать пароль">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="auth-register-error" class="error-msg" style="display: none;"></div>
+
+        <div class="modal-actions" style="margin-top: 20px;">
+          <button type="button" id="btn-cancel-auth-register" class="btn btn-secondary">Отмена</button>
+          <button type="submit" id="btn-submit-auth-register" class="btn btn-primary">
+            Создать аккаунт
+          </button>
+        </div>
+
+        <div class="auth-switch-prompt">
+          <span>Уже зарегистрированы?</span>
+          <button type="button" class="btn-text-link" id="link-switch-to-login">Войти в профиль</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Device Synchronization Modal (QR code, Sync Code, Cloud Database) -->
+  <div class="modal-backdrop" id="modal-sync" style="display: none;">
+    <div class="modal-dialog modal-dialog-sync">
+      <div class="modal-dialog-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Синхронизация устройств</h3>
+          <p class="modal-subtitle">Переносите прогресс между телефоном и ПК без потери данных</p>
+        </div>
+        <button type="button" class="btn-icon modal-close-btn" id="btn-close-sync-modal" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Sync Mode Tabs -->
+      <div class="auth-tabs-group" role="tablist">
+        <button type="button" class="auth-tab-btn active" id="tab-sync-qr">
+          QR-код и ссылка
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-sync-enter">
+          Ввести код
+        </button>
+        <button type="button" class="auth-tab-btn" id="tab-sync-cloud">
+          Облачная база
+        </button>
+      </div>
+
+      <!-- Panel 1: QR Code & Link (from this device to phone) -->
+      <div class="sync-panel" id="panel-sync-qr">
+        <div class="sync-qr-wrapper">
+          <div id="sync-qr-code" class="sync-qr-box"></div>
+          <div class="sync-qr-hint">
+            Наведите камеру смартфона на QR-код для мгновенного переноса вашего профиля и статистики на телефон.
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 14px;">
+          <label for="sync-code-display">Код синхронизации</label>
+          <div class="sync-copy-row">
+            <input type="text" id="sync-code-display" class="sync-code-input" readonly>
+            <button type="button" id="btn-copy-sync-code" class="btn btn-secondary">
+              Копировать код
+            </button>
+          </div>
+        </div>
+
+        <div class="sync-actions-row" style="margin-top: 14px;">
+          <button type="button" id="btn-copy-sync-url" class="btn btn-primary" style="width: 100%;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Скопировать прямую ссылку для телефона
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 2: Enter Sync Code or Link (received from other device) -->
+      <div class="sync-panel" id="panel-sync-enter" style="display: none;">
+        <div class="sync-enter-desc">
+          Вставьте код синхронизации или ссылку, отправленную с другого устройства:
+        </div>
+
+        <div class="form-group" style="margin-top: 12px;">
+          <label for="input-sync-code-value">Код или ссылка</label>
+          <div class="input-glass-container">
+            <input type="text" id="input-sync-code-value" placeholder="Вставьте код или ссылку с #sync=...">
+          </div>
+        </div>
+
+        <div id="sync-import-error" class="error-msg" style="display: none; margin-top: 10px;"></div>
+
+        <div class="modal-actions" style="margin-top: 20px;">
+          <button type="button" id="btn-cancel-sync-enter" class="btn btn-secondary">Отмена</button>
+          <button type="button" id="btn-apply-sync-code" class="btn btn-primary">
+            Применить синхронизацию
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 3: Cloud Realtime Database (Firebase / Supabase) -->
+      <div class="sync-panel" id="panel-sync-cloud" style="display: none;">
+        <div class="sync-enter-desc">
+          Для непрерывной автоматической синхронизации при каждом нажатии вы можете подключить бесплатную облачную базу данных (Firebase Realtime Database или Supabase REST):
+        </div>
+
+        <div class="form-group" style="margin-top: 12px;">
+          <label for="input-cloud-url">URL базы данных Firebase Realtime</label>
+          <div class="input-glass-container">
+            <input type="url" id="input-cloud-url" placeholder="https://ваш-проект-default-rtdb.firebaseio.com">
+          </div>
+        </div>
+
+        <div id="cloud-sync-status-box" class="sync-cloud-status" style="display: none; margin-top: 10px;"></div>
+
+        <div class="modal-actions" style="margin-top: 20px;">
+          <button type="button" id="btn-clear-cloud-config" class="btn btn-secondary">Отключить облако</button>
+          <button type="button" id="btn-save-cloud-config" class="btn btn-primary">
+            Подключить и синхронизировать
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: 17 Ranks Table -->
+  <div class="modal-backdrop" id="modal-ranks" style="display: none;">
+    <div class="modal-dialog modal-dialog-ranks">
+      <div class="modal-dialog-header">
+        <div class="modal-title-group">
+          <h3 class="modal-title">Система статусов челленджа</h3>
+          <p class="modal-subtitle">17 уровней мастерства от первых подтягиваний до вершины в 5 000</p>
+        </div>
+        <button type="button" class="btn-icon modal-close-btn" id="btn-close-ranks-modal" aria-label="Закрыть">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="ranks-legend-bar">
+        <div class="ranks-legend-item"><span class="legend-dot dot-green"></span> 1–4: Начальные</div>
+        <div class="ranks-legend-item"><span class="legend-dot dot-yellow"></span> 5–8: Прогресс</div>
+        <div class="ranks-legend-item"><span class="legend-dot dot-orange"></span> 9–13: Мастерство</div>
+        <div class="ranks-legend-item"><span class="legend-dot dot-red"></span> 14–17: Элита (топ)</div>
+      </div>
+
+      <div class="ranks-grid-list" id="ranks-grid-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Canvas for Confetti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="qrcode.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
